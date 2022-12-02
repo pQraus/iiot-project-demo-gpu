@@ -1,0 +1,4 @@
+- op: replace
+  path: /cluster/network/cni
+  value: 
+    name: flannel

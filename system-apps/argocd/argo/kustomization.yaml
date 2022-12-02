@@ -1,0 +1,78 @@
+namespace: system-apps
+resources:
+  - https://github.com/argoproj/argo-cd/manifests/cluster-install?ref=v2.4.9&submodules=false&timeout=120s
+  # timeout fix : https://github.com/kubernetes-sigs/kustomize/issues/3742#issuecomment-1081204592
+
+# GitHub SSH key fingerprints (https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/githubs-ssh-key-fingerprints)
+# the known hosts include ssh.github.com:443 (which aren't default values)
+configMapGenerator:
+  - name: argocd-ssh-known-hosts-cm
+    behavior: merge
+    files:
+      - config/ssh_known_hosts
+
+patchesJson6902:
+  - target:
+      version: v1
+      kind: Deployment
+      name: argocd-applicationset-controller
+    # an applicationsset should only create the applications not modify them 
+    # (e.g. to enable that a user can disable the auto-synch)
+    path: patches/applicationset-create-only.yaml
+  - target:
+      version: v1
+      kind: ClusterRoleBinding
+      name: argocd-application-controller
+    path: patches/replace-crb-namespace.yaml
+  - target:
+      version: v1
+      kind: ClusterRoleBinding
+      name: argocd-server
+    path: patches/replace-crb-namespace.yaml
+
+# patch image pull policy to IfNotPresent
+  - target:
+      version: v1
+      kind: Deployment
+      name: argocd-applicationset-controller
+    path: patches/replace-pull-policy-container.yaml
+  - target:
+      version: v1
+      kind: Deployment
+      name: argocd-dex-server
+    path: patches/replace-pull-policy-container.yaml
+  - target:
+      version: v1
+      kind: Deployment
+      name: argocd-dex-server
+    path: patches/replace-pull-policy-initcontainer.yaml
+  - target:
+      version: v1
+      kind: Deployment
+      name: argocd-notifications-controller
+    path: patches/replace-pull-policy-container.yaml
+  - target:
+      version: v1
+      kind: Deployment
+      name: argocd-redis
+    path: patches/replace-pull-policy-container.yaml
+  - target:
+      version: v1
+      kind: Deployment
+      name: argocd-repo-server
+    path: patches/replace-pull-policy-container.yaml
+  - target:
+      version: v1
+      kind: Deployment
+      name: argocd-server
+    path: patches/replace-pull-policy-container.yaml 
+  - target:
+      version: v1
+      kind: StatefulSet
+      name: argocd-application-controller
+    path: patches/replace-pull-policy-container.yaml
+
+
+patchesStrategicMerge:
+- patches/argo-cm.yaml
+- patches/rbac-cm.yaml

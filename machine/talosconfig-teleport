@@ -1,0 +1,10 @@
+context: gpu-demo
+contexts:
+    gpu-demo:
+        endpoints:
+            - 127.0.0.1
+        nodes:
+            - gpu-demo
+        ca: <paste the ca from the talosconfig file here>
+        crt: ""
+        key: ""

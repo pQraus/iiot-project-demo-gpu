@@ -1,0 +1,4 @@
+- op: add 
+  path: "/machine/install/extensions/-"
+  value: 
+    image: "docker.io/stereobutter/auth-proxy:v0.1.0"

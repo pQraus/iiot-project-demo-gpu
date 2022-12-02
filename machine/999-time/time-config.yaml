@@ -1,0 +1,4 @@
+- op: add
+  path: /machine/time
+  value:
+    bootTimeout: 0m30s

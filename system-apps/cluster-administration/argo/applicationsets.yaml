@@ -1,0 +1,63 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: system-apps
+  namespace: system-apps
+spec:
+  generators:
+  - git:
+      repoURL: 'git@github.com:pQraus/iiot-project-demo-gpu.git'
+      revision: main
+      directories:
+      # '**' will not work
+      - path: 'system-apps/*/argo'
+      # e.g. system_apps/app1/argo
+      - path: 'system-apps/*/*/argo'
+      # e.g. user_apps/app2/k8s/argo
+  template:
+    metadata:
+      name: '{{path[1]}}'
+    spec:
+      project: system
+      source:
+        repoURL: 'git@github.com:pQraus/iiot-project-demo-gpu.git'
+        targetRevision: main
+        path: '{{path}}'
+      destination:
+        server: https://kubernetes.default.svc
+      syncPolicy:
+        automated: {}
+        retry:
+          limit: 0
+---
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: user-apps
+  namespace: system-apps
+spec:
+  generators:
+  - git:
+      repoURL: 'git@github.com:pQraus/iiot-project-demo-gpu.git'
+      revision: main
+      directories:
+      # '**' will not work
+      - path: 'user-apps/*/argo'
+      # e.g. system_apps/app1/argo
+      - path: 'user-apps/*/*/argo'
+      # e.g. user_apps/app2/k8s/argo
+  template:
+    metadata:
+      name: '{{path[1]}}'
+    spec:
+      project: 'user'
+      source:
+        repoURL: 'git@github.com:pQraus/iiot-project-demo-gpu.git'
+        targetRevision: main
+        path: '{{path}}'
+      destination:
+        server: https://kubernetes.default.svc
+      syncPolicy:
+        automated: {}
+        retry:
+          limit: 0

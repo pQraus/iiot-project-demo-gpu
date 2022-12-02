@@ -1,0 +1,25 @@
+- op: add
+  path: /machine/files/-
+  value: 
+    content: |
+      version: 1
+      client_ca_crt: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURmRENDQW1TZ0F3SUJBZ0lRV0UyOGl3RnRZbytwN0NvMVM0MHh1REFOQmdrcWhraUc5dzBCQVFzRkFEQlkKTVJFd0R3WURWUVFLRXdoMFpXeGxjRzl5ZERFUk1BOEdBMVVFQXhNSWRHVnNaWEJ2Y25ReE1EQXVCZ05WQkFVVApKekV4TnpNM05UWTVORFU1TXpNME1UVTNOemt3TlRreE56YzJPRFF4TnpZek9EUXlPVEV4TWpBZUZ3MHlNakExCk1EUXhNVFF4TXpGYUZ3MHpNakExTURFeE1UUXhNekZhTUZneEVUQVBCZ05WQkFvVENIUmxiR1Z3YjNKME1SRXcKRHdZRFZRUURFd2gwWld4bGNHOXlkREV3TUM0R0ExVUVCUk1uTVRFM016YzFOamswTlRrek16UXhOVGMzT1RBMQpPVEUzTnpZNE5ERTNOak00TkRJNU1URXlNSUlCSWpBTkJna3Foa2lHOXcwQkFRRUZBQU9DQVE4QU1JSUJDZ0tDCkFRRUF6cUt6R0k0NXVOdlRaaWVrM1FVZm9MZnpTemV1c1NsdFpRRmZkYWs0Y0VEdGpTbm1la213SmhjNCtqb3IKK2FZVTJ6THBJQUxUMGdKSDdURkxUajFNa0VicmFGN08vUy9YbGZQL1hWNzNhcDRINDRKQThIN1N0SUVrOUFpZQpRaDlRTnM4aW1GQW5OUW93aTVFV01qY215KzV1MS9mZVdzRDZLQm8rZXZZd0F5ZnpiQWNPSE0wSS9RUzhPbEhpCkRLSHdOaXhnQ3RWNER2RFhtUi90QVhqVUNidkU0dE54bDcrUDl4SDlsbHNON0VEd1lqUmJ1bzFtUU5LanRldmQKZnN0VExxMEJMdW9vNnFMbG9FRnBRZEVHeXEvcERidDlMS0E1RnQ0VmZWc1Njd0daTTZMc05HQklYcnBEakJOTQpwVHY3ZUIxeVhkdGVzcWVpaHZXeC9TM0dvUUlEQVFBQm8wSXdRREFPQmdOVkhROEJBZjhFQkFNQ0FhWXdEd1lEClZSMFRBUUgvQkFVd0F3RUIvekFkQmdOVkhRNEVGZ1FVNUorbjFKb2kxM051a0FuR0Z3VmhWMTNyOW0wd0RRWUoKS29aSWh2Y05BUUVMQlFBRGdnRUJBS2x0OU4yeXVYdW9SbHJzNVFqOUJxaksrNkFxY2JoU2tjaHoyNmN2aFN0eApsNE4vcEUwNHNBeFE1SHRBYjVwTTlzaHZpZExBODE0WEQyK1dhWkE1ekpUNUxZRHpsa05oanlFTEdSS0V1OTJGCnN5OWMvVExNak1yWU9lazAyZ09jTUVrU2E1UWxrVEVGcXQxb2Z1bFJhOUswS1FubWdGUTY3T21CWUFGSnJCdWMKbzd2QXRoTDRIVHAvVFlWdDB2RXIzLzg0Ykhsa0pIeFdTallZdHV5TEpDeHFxZFJCNkhtelpmandDZ3BOZ3BHMApleTZER0N2dElTZm1RZXg4c2VkT0gyYjlXSnUrd1B1SkhYU3lDd1NNZy9OOTF2MGg0eWRsaVpLM3JwdUQwRWxoCnhCREpDNW9tR0YrUGN6enJsR0w3UWdZdTJHVTFpVm1YdTljWWZqQkRqcFE9Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0KCg==
+      haproxy_config: |+
+        defaults
+          mode tcp
+
+        frontend insecure_api
+            bind :51002 interface lo ssl crt server.pem # ca-file client_ca.crt verify required #force-tlsv13
+            # tcp-request content reject if !{ ssl_c_s_dn(O) -i -m str "developer" }
+            default_backend api
+
+        frontend secure_api
+            bind :51001 ssl crt server.pem ca-file client_ca.crt verify required #force-tlsv13
+            tcp-request content reject if !{ ssl_c_s_dn(O) -i -m str "developer" }
+            default_backend api
+
+        backend api
+            server api :50000 ssl crt admin.pem ca-file ca.crt
+    permissions: 0o600 # The file's permissions in octal.
+    path: /var/lib/auth-proxy/config.yaml
+    op: create

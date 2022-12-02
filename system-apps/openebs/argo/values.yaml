@@ -1,0 +1,5 @@
+localprovisioner:
+  enableDeviceClass: false # disable localpv-device (it's not needed on a device with a disk for os+data)
+  hostpathClass:
+    reclaimPolicy: Retain # retain the pv after the corresponding pvc is deleted
+    isDefaultClass: true

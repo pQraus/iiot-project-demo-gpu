@@ -1,0 +1,4 @@
+- op: add
+  path: /machine/install/extensions/-
+  value:
+    image: docker.io/pqraus/bootstrap-extension:v0.2.1

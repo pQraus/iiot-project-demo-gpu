@@ -1,0 +1,10 @@
+resources:
+  - resources/runtime_class.yaml
+
+helmCharts:
+  - name: nvidia-device-plugin 
+    version: 0.11.0
+    repo: https://nvidia.github.io/k8s-device-plugin
+    valuesInline:
+      runtimeClassName: nvidia
+    releaseName: nvidia-device-plugin 

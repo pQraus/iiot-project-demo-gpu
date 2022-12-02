@@ -1,0 +1,46 @@
+name: Renovate Template Updater
+
+on: 
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'     
+        required: true
+        default: 'info' 
+        type: choice
+        options:
+        - info
+        - warning
+        - debug 
+#  schedule:
+#    - cron: '0 23 * * *'
+
+jobs:
+  renovate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set Log level
+        id: logLevel
+        run: |
+          LOG_LEVEL=${{ github.event.inputs.logLevel }}
+          echo "::set-output name=value::${LOG_LEVEL:-'info'}"
+      - name: Docker Login
+        uses: docker/login-action@v2.0.0
+        with:
+          # TODO machine account
+          username: pqraus
+          password: ${{ secrets.TOKEN_DOCKERHUB }}
+      - name: Pull template updater image
+        # TODO change Image name
+        run: |
+          docker pull schulzsystemtechnik/pqraus-sandkasten:copier
+      - name: Checkout repo
+        uses: actions/checkout@v3.0.2
+      - name: Run Renovate Bot
+        uses: renovatebot/github-action@v32.119.2
+        with:
+          configurationFile: .github/renovate.js
+          token: ${{ secrets.TOKEN_GITHUB }}
+        env:
+          LOG_LEVEL: ${{ steps.logLevel.outputs.value }}
+          RENOVATE_REPOSITORIES: ${{ github.repository }} 

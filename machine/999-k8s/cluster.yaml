@@ -1,0 +1,13 @@
+- op: replace
+  path: /cluster/controlPlane
+  value:
+    endpoint: https://gpu-demo:6443
+- op: replace
+  path: /cluster/clusterName
+  value: gpu-demo
+- op: replace
+  path: /cluster/allowSchedulingOnControlPlanes
+  value: true
+- op: replace
+  path: /cluster/discovery/enabled
+  value: false

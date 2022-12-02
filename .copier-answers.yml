@@ -1,0 +1,25 @@
+# Changes here will be overwritten by Copier; NEVER EDIT MANUALLY
+_commit: v0.2.0-36-gf70faec
+_src_path: https://github.com/SchulzSystemtechnik/iiot-base-box.git
+advanced_network_config: false
+advanced_ntp_config: false
+box_type: GPU
+cluster_admin_repo_url: git@github.com:pQraus/iiot-project-demo-gpu.git
+disk_name: /dev/sda
+docker_username: pqraus
+name: gpu-demo
+network_interfaces: "# example for a interface with DHCP\n- interface: eth0\n  dhcp:\
+    \ true\n  dhcpOptions:\n      routeMetric: 0  # optional metric / priority of\
+    \ the DHCP routes\n  mtu: 1500   # 'package' size, ethernet = 1500\n\n# example\
+    \ for a interface with a static address:\n#- interface: eth1\n#  addresses:\n\
+    #    - 192.168.50.20/24   # static ip with subnetlength\n#  routes:\n#    - network:\
+    \ 0.0.0.0/0     # destination, in this case the default route\n#      gateway:\
+    \ 192.168.50.1  # normally the address of the router\n#      metric: 1024    \
+    \       # optional metric / priority of this route\n#  dhcp: false\n#  mtu: 1500\
+    \  # 'package' size, ethernet = 1500"
+network_nameserver: '- 8.8.8.8
+
+    # - 1.1.1.1'
+ntp_server: '- pool.ntp.org'
+ntp_timeout: 30
+teleport_cluster_name: gpu-demo

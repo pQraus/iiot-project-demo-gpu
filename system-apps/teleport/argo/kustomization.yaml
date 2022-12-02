@@ -1,0 +1,32 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: system-apps-privileged
+helmCharts:
+  - name: teleport-kube-agent
+    version: 10.1.9
+    repo: https://charts.releases.teleport.dev
+    valuesInline:
+      roles: kube,app
+      proxyAddr: proxy.teleport.schulzcontrolcenter.com:443
+      caPin: ["sha256:061f96f3943e52b910f530116ca95586fe98bb950d091fcdc0ed9833f27323ee"]
+      kubeClusterName:  gpu-demo 
+      storage:
+        enabled: true
+      apps:
+        - name:  talos-api-gpu-demo 
+          uri: tcp://localhost:51002
+      podSecurityPolicy:
+        enabled: false
+    namespace: system-apps-privileged
+    releaseName: teleport-agent
+patchesStrategicMerge:
+- |-
+  apiVersion: apps/v1
+  kind: StatefulSet
+  metadata:
+    name: teleport-agent
+    namespace: system-apps-privileged
+  spec:
+    template:
+      spec:
+        hostNetwork: true

@@ -1,0 +1,20 @@
+- op: replace
+  path: /machine/network/interfaces
+  value:
+    # example for a interface with DHCP
+    - interface: eth0
+      dhcp: true
+      dhcpOptions:
+          routeMetric: 0  # optional metric / priority of the DHCP routes
+      mtu: 1500   # 'package' size, ethernet = 1500
+
+    # example for a interface with a static address:
+    #- interface: eth1
+    #  addresses:
+    #    - 192.168.50.20/24   # static ip with subnetlength
+    #  routes:
+    #    - network: 0.0.0.0/0     # destination, in this case the default route
+    #      gateway: 192.168.50.1  # normally the address of the router
+    #      metric: 1024           # optional metric / priority of this route
+    #  dhcp: false
+    #  mtu: 1500  # 'package' size, ethernet = 1500

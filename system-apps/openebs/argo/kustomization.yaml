@@ -9,4 +9,4 @@ helmCharts:
     valuesFile: values.yaml
     releaseName: openebs
     includeCRDs: true
-    namespace: system-privileged
+    namespace: system-apps-privileged
